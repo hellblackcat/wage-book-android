@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.db
+*.pyc.d
+*.kvcache
+.kivy/
+build/
+*.apk
+bin/
+.deploy/
+.git/
