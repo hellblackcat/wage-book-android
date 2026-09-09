@@ -1,0 +1,159 @@
+# widgets.kv — 自定义组件模板
+
+<_DateField>:
+    hint_text: "日期"
+    input_filter: None
+
+<_TimeField>:
+    hint_text: "时间"
+    input_filter: None
+
+<_NumField>:
+    hint_text: "数字"
+    input_filter: "float"
+
+
+<_RecordItemCard>:
+    size_hint_y: None
+    height: "160dp"
+
+    MDCard:
+        orientation: "vertical"
+        padding: "10dp"
+        spacing: "6dp"
+        radius: "8dp"
+        elevation: 1
+        line_color: "#E0E0E0"
+
+        # 计费方式切换
+        MDBoxLayout:
+            size_hint_y: None
+            height: "32dp"
+            spacing: "6dp"
+
+            MDChip:
+                text: "计件"
+                active: root.item_data.get("charge_mode") == 0
+                on_active: root._set_charge_mode(0, args[1])
+                md_bg_color: app.theme_cls.primary_color if root.item_data.get("charge_mode") == 0 else "#E0E0E0"
+                text_color: 1, 1, 1, 1 if root.item_data.get("charge_mode") == 0 else "#666666"
+                radius: "6dp"
+                size_hint_x: 0.5
+
+            MDChip:
+                text: "计时"
+                active: root.item_data.get("charge_mode") == 1
+                on_active: root._set_charge_mode(1, args[1])
+                md_bg_color: "#FF9800" if root.item_data.get("charge_mode") == 1 else "#E0E0E0"
+                text_color: 1, 1, 1, 1 if root.item_data.get("charge_mode") == 1 else "#666666"
+                radius: "6dp"
+                size_hint_x: 0.5
+
+            MDIconButton:
+                icon: "close"
+                on_release: root.dispatch("on_remove", root.idx)
+                size_hint: None, None
+                size: "32dp", "32dp"
+                pos_hint: {"right": 1}
+                icon_size: "18dp"
+                theme_text_color: "Custom"
+                text_color: "#999999"
+
+        # 明细字段行
+        if root.item_data.get("charge_mode") == 0:
+            GridLayout:
+                cols: 3
+                spacing: "6dp"
+                size_hint_y: None
+                height: "52dp"
+
+                _TF:
+                    hint_text: "型号"
+                    text: root.item_data.get("part_model", "")
+                    on_text: root._on_model_change(self.text)
+                    size_hint_x: 1
+
+                _TF:
+                    hint_text: "类型"
+                    text: root.item_data.get("work_type", "")
+                    on_text: root._on_field_change("work_type", self.text)
+                    size_hint_x: 0.8
+
+                _TF:
+                    hint_text: "数量（件）"
+                    text: root.item_data.get("quantity", "")
+                    input_filter: "int"
+                    on_text: root._on_field_change("quantity", self.text)
+                    size_hint_x: 0.8
+
+            GridLayout:
+                cols: 2
+                spacing: "6dp"
+                size_hint_y: None
+                height: "52dp"
+
+                _TF:
+                    hint_text: "单价（元/件）"
+                    text: root.item_data.get("price_display", "—")
+                    input_filter: "float"
+                    on_text: root._on_field_change("price_display", self.text)
+                    size_hint_x: 1
+
+                BoxLayout:
+                    size_hint_x: 1
+                    MDLabel:
+                        text: root.item_data.get("wage_display", "0.00") + " 元"
+                        font_style: "Body1"
+                        bold: True
+                        color: app.theme_cls.primary_color
+                        halign: "center"
+                        valign: "middle"
+
+        if root.item_data.get("charge_mode") == 1:
+            GridLayout:
+                cols: 3
+                spacing: "6dp"
+                size_hint_y: None
+                height: "52dp"
+
+                _TF:
+                    hint_text: "型号"
+                    text: root.item_data.get("part_model", "")
+                    on_text: root._on_model_change(self.text)
+                    size_hint_x: 1
+
+                _TF:
+                    hint_text: "类型"
+                    text: root.item_data.get("work_type", "")
+                    on_text: root._on_field_change("work_type", self.text)
+                    size_hint_x: 0.8
+
+                _TF:
+                    hint_text: "计费小时"
+                    text: root.item_data.get("charge_hours", "")
+                    input_filter: "float"
+                    on_text: root._on_field_change("charge_hours", self.text)
+                    size_hint_x: 0.8
+
+            GridLayout:
+                cols: 2
+                spacing: "6dp"
+                size_hint_y: None
+                height: "52dp"
+
+                _TF:
+                    hint_text: "时薪（元/h）"
+                    text: root.item_data.get("price_display", "—")
+                    input_filter: "float"
+                    on_text: root._on_field_change("price_display", self.text)
+                    size_hint_x: 1
+
+                BoxLayout:
+                    size_hint_x: 1
+                    MDLabel:
+                        text: root.item_data.get("wage_display", "0.00") + " 元"
+                        font_style: "Body1"
+                        bold: True
+                        color: app.theme_cls.primary_color
+                        halign: "center"
+                        valign: "middle"

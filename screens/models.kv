@@ -1,0 +1,102 @@
+<ModelsScreen>:
+    name: "models"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: 0
+
+        # 标题栏
+        MDBoxLayout:
+            size_hint_y: None
+            height: "52dp"
+            padding: "12dp", "0dp"
+            md_bg_color: "#F0F4FF"
+
+            MDLabel:
+                text: "型号管理"
+                font_style: "Subtitle1"
+                bold: True
+                size_hint_x: 1
+
+        # 列表
+        ScrollView:
+            do_scroll_x: False
+            RecycleView:
+                id: rv_models
+                key_viewclass: "viewclass"
+                key_size: "height"
+                data: [
+                    {
+                        "viewclass": "ModelListItem",
+                        "model": m,
+                        "piece_display": "%0.3f" % ((m.get("piece_milli") or 0) / 1000.0),
+                        "hourly_display": "%0.2f" % ((m.get("hourly_milli") or 0) / 1000.0),
+                    }
+                    for m in root.models_list
+                ]
+                RecycleBoxLayout:
+                    padding: "8dp"
+                    spacing: "6dp"
+                    default_size: None, "72dp"
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: "vertical"
+
+        # 底部新增按钮
+        MDBoxLayout:
+            size_hint_y: None
+            height: "64dp"
+            padding: "12dp", "8dp"
+            md_bg_color: "#FFFFFF"
+
+            MDRaisedButton:
+                text: "新增型号"
+                icon: "plus"
+                on_release: root.open_add_dialog()
+                size_hint_x: 1
+
+
+<ModelListItem>:
+    ripple: True
+    on_release: root.open_edit_dialog(root.model.get("id"))
+
+    MDCard:
+        size_hint_y: None
+        height: "72dp"
+        padding: "14dp", "8dp"
+        radius: "8dp"
+        elevation: 1
+        line_color: "#E0E0E0"
+
+        BoxLayout:
+            orientation: "vertical"
+            spacing: "2dp"
+
+            MDLabel:
+                text: root.model.get("name", "")
+                font_style: "Body1"
+                bold: True
+                color: "#1F2329"
+
+            MDLabel:
+                text: ("类型: " + root.model.get("default_type", "") + "    ") if root.model.get("default_type") else ""
+                font_style: "Caption"
+                color: "#666666"
+                size_hint_y: None
+                height: "18dp"
+
+            BoxLayout:
+                spacing: "12dp"
+
+                MDLabel:
+                    text: "计件 " + root.piece_display + " 元/件"
+                    font_style: "Caption"
+                    color: app.theme_cls.primary_color
+                    size_hint_x: 0.5
+
+                MDLabel:
+                    text: "计时 " + root.hourly_display + " 元/h"
+                    font_style: "Caption"
+                    color: "#FF9800"
+                    size_hint_x: 0.5

@@ -1,0 +1,151 @@
+#: import business business
+
+<RecordsScreen>:
+    name: "records"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: 0
+
+        # ── 月份选择栏 ──
+        MDBoxLayout:
+            size_hint_y: None
+            height: "52dp"
+            padding: "8dp", "4dp"
+            md_bg_color: "#F0F4FF"
+
+            MDIconButton:
+                icon: "chevron-left"
+                on_release: root.prev_month()
+                pos_hint: {"center_y": 0.5}
+
+            MDLabel:
+                text: root.current_month
+                halign: "center"
+                valign: "center"
+                font_style: "Subtitle1"
+                bold: True
+                size_hint_x: 1
+
+            MDIconButton:
+                icon: "chevron-right"
+                on_release: root.next_month()
+                pos_hint: {"center_y": 0.5}
+
+            MDIconButton:
+                icon: "calendar-today"
+                on_release: root.load_records()
+                pos_hint: {"center_y": 0.5}
+
+        # ── 记录列表 ──
+        RecycleView:
+            id: rv
+            key_viewclass: "viewclass"
+            key_size: "height"
+            data: [
+                {
+                    "viewclass": "RecordItem",
+                    "record": r,
+                    "wage_display": ("%0.2f" % (int(r.get("wage_fen") or 0) / 100.0)),
+                    "shift_display": "夜班" if r.get("shift_type") == "night" else "白班",
+                }
+                for r in root.records_list
+            ]
+            RecycleBoxLayout:
+                padding: "8dp"
+                spacing: "6dp"
+                default_size: None, "92dp"
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: "vertical"
+
+        # ── 右下角 FAB ──
+        MDIconButton:
+            icon: "plus"
+            md_bg_color: app.theme_cls.primary_color
+            text_color: 1, 1, 1, 1
+            pos_hint: {"right": 0.95, "bottom": 0.08}
+            on_release: root.open_add_dialog()
+            elevation: 4
+            radius: "24dp"
+
+
+<RecordItem>:
+    size_hint_y: None
+    height: "92dp"
+    ripple: True
+    on_release: root.open_edit()
+    on_long_press: root.open_delete_confirm()
+
+    MDCard:
+        orientation: "horizontal"
+        padding: "12dp", "8dp"
+        spacing: "8dp"
+        elevation: 1
+        radius: "8dp"
+        line_color: "#E0E0E0"
+
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint_x: 0.72
+            spacing: "2dp"
+
+            # 班别 + 日期
+            BoxLayout:
+                size_hint_y: None
+                height: "22dp"
+                spacing: "6dp"
+
+                MDChip:
+                    text: root.shift_display
+                    icon: ""
+                    md_bg_color: "#1565C0" if root.record.get("shift_type") == "night" else "#1976D2"
+                    text_color: 1, 1, 1, 1
+                    font_size: "11sp"
+                    radius: "10dp"
+                    size_hint: None, None
+                    size: self.texture_size[0] + 16, "22dp"
+
+                MDLabel:
+                    text: root.record.get("date", "")
+                    font_style: "Body2"
+                    color: "#666666"
+                    valign: "middle"
+
+            # 型号 + 类型
+            MDLabel:
+                text: (root.record.get("part_model") or "") + (" " + root.record.get("work_type", "") if root.record.get("work_type") else "")
+                font_style: "Body1"
+                color: "#1F2329"
+                size_hint_y: None
+                height: "24dp"
+                text_size: self.size
+                valign: "bottom"
+
+            # 工时/数量
+            MDLabel:
+                text: ("出勤 %.1fh" % float(root.record.get("work_hours") or 0)) + (" | 加班 %.1fh" % float(root.record.get("overtime_hours") or 0) if float(root.record.get("overtime_hours") or 0) > 0 else "")
+                font_style: "Caption"
+                color: "#888888"
+
+        # 金额（右侧）
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint_x: 0.28
+            alignment: "center"
+
+            MDLabel:
+                text: root.wage_display
+                font_style: "H6"
+                color: app.theme_cls.primary_color
+                halign: "right"
+                valign: "middle"
+                text_size: self.size
+
+            MDLabel:
+                text: "元"
+                font_style: "Caption"
+                color: "#999999"
+                halign: "right"
+                valign: "top"

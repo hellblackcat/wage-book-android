@@ -1,0 +1,138 @@
+# shell.kv
+
+<ShellScreen>:
+    name: "shell"
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        # 顶部栏
+        MDTopAppBar:
+            title: "工资记账表"
+            anchor_title: "left"
+            elevation: 2
+            md_bg_color: app.theme_cls.primary_color
+
+        # 内嵌 ScreenManager（Tab 内容区）
+        ScreenManager:
+            id: inner_sm
+
+            RecordsScreen:
+                name: "records"
+
+            StatsScreen:
+                name: "stats"
+
+            ModelsScreen:
+                name: "models"
+
+            ProfileScreen:
+                name: "profile"
+
+        # 底部导航（手写，干净实现）
+        MDBottomNavigationBar:
+            size_hint_y: None
+            height: "56dp"
+            md_bg_color: "#FFFFFF"
+            elevation: 4
+
+            # 用 BoxLayout + on_touch_down 做 Tab 切换
+            BoxLayout:
+                size_hint: 0.25, 1
+                pos_hint: {"x": 0}
+                on_touch_down: root.switch_to("records")
+
+                BoxLayout:
+                    orientation: "vertical"
+                    padding: "0dp", "4dp"
+
+                    MDIcon:
+                        icon: "clipboard-text-outline"
+                        theme_text_color: "Custom"
+                        text_color: app.theme_cls.primary_color \
+                            if inner_sm.current == "records" else "#999999"
+                        halign: "center"
+                        size_hint_y: 0.6
+
+                    MDLabel:
+                        text: "记录"
+                        font_size: "10sp"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.theme_cls.primary_color \
+                            if inner_sm.current == "records" else "#999999"
+
+            BoxLayout:
+                size_hint: 0.25, 1
+                pos_hint: {"x": 0.25}
+                on_touch_down: root.switch_to("stats")
+
+                BoxLayout:
+                    orientation: "vertical"
+                    padding: "0dp", "4dp"
+
+                    MDIcon:
+                        icon: "chart-bar"
+                        theme_text_color: "Custom"
+                        text_color: app.theme_cls.primary_color \
+                            if inner_sm.current == "stats" else "#999999"
+                        halign: "center"
+                        size_hint_y: 0.6
+
+                    MDLabel:
+                        text: "统计"
+                        font_size: "10sp"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.theme_cls.primary_color \
+                            if inner_sm.current == "stats" else "#999999"
+
+            BoxLayout:
+                size_hint: 0.25, 1
+                pos_hint: {"x": 0.5}
+                on_touch_down: root.switch_to("models")
+
+                BoxLayout:
+                    orientation: "vertical"
+                    padding: "0dp", "4dp"
+
+                    MDIcon:
+                        icon: "package-variant"
+                        theme_text_color: "Custom"
+                        text_color: app.theme_cls.primary_color \
+                            if inner_sm.current == "models" else "#999999"
+                        halign: "center"
+                        size_hint_y: 0.6
+
+                    MDLabel:
+                        text: "型号"
+                        font_size: "10sp"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.theme_cls.primary_color \
+                            if inner_sm.current == "models" else "#999999"
+
+            BoxLayout:
+                size_hint: 0.25, 1
+                pos_hint: {"x": 0.75}
+                on_touch_down: root.switch_to("profile")
+
+                BoxLayout:
+                    orientation: "vertical"
+                    padding: "0dp", "4dp"
+
+                    MDIcon:
+                        icon: "account-outline"
+                        theme_text_color: "Custom"
+                        text_color: app.theme_cls.primary_color \
+                            if inner_sm.current == "profile" else "#999999"
+                        halign: "center"
+                        size_hint_y: 0.6
+
+                    MDLabel:
+                        text: "我的"
+                        font_size: "10sp"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.theme_cls.primary_color \
+                            if inner_sm.current == "profile" else "#999999"

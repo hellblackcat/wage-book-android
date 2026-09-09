@@ -1,0 +1,44 @@
+#: import business business
+
+<RecordEditScreen>:
+    name: "record_edit"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: 0
+
+        # ── 顶部导航 ──
+        MDBoxLayout:
+            size_hint_y: None
+            height: "52dp"
+            md_bg_color: app.theme_cls.primary_color
+            padding: "4dp", "0dp"
+
+            MDIconButton:
+                icon: "arrow-left"
+                icon_color: 1, 1, 1, 1
+                on_release: root.go_back()
+
+            MDLabel:
+                text: ("编辑记录" if root.editing_id else "新增记录")
+                font_style: "Subtitle1"
+                text_color: 1, 1, 1, 1
+                bold: True
+                size_hint_x: 1
+
+            MDRaisedButton:
+                text: "保存"
+                md_bg_color: "#FFFFFF"
+                text_color: app.theme_cls.primary_color
+                on_release: root.save()
+
+        ScrollView:
+            do_scroll_x: False
+
+            MDBoxLayout:
+                id: form_content
+                orientation: "vertical"
+                spacing: "10dp"
+                padding: "12dp"
+                size_hint_y: None
+                height: self.minimum_height

@@ -1,0 +1,148 @@
+#: import business business
+
+# ── 主界面 ──
+<MainScreenManager>:
+    id: sm
+
+    # 首次设置
+    SetupScreen:
+        name: "setup"
+
+    # 主界面（含底部导航）
+    ShellScreen:
+        name: "shell"
+        id: shell
+
+    # 记录编辑（全屏）
+    RecordEditScreen:
+        name: "record_edit"
+
+
+# ── ShellScreen：顶部栏 + ScreenManager + 底部导航 ──
+<ShellScreen>:
+    name: "shell"
+    MDBoxLayout:
+        orientation: "vertical"
+
+        # 顶部
+        MDTopAppBar:
+            id: topbar
+            title: "工资记账表"
+            anchor_title: "left"
+            elevation: 2
+            md_bg_color: app.theme_cls.primary_color
+            left_action_items: [["menu", lambda x: None]]
+
+        # 内容区
+        ScreenManager:
+            id: inner_sm
+            transition: SlideTransition(direction="left")
+
+            RecordsScreen:
+                name: "records"
+            StatsScreen:
+                name: "stats"
+            ModelsScreen:
+                name: "models"
+            ProfileScreen:
+                name: "profile"
+
+        # 底部导航
+        MDBottomNavigationBar:
+            size_hint_y: None
+            height: "56dp"
+            md_bg_color: "#FAFAFA"
+            elevation: 4
+
+            # 记录
+            BoxLayout:
+                on_touch_down: root.switch_to("records")
+                orientation: "vertical"
+                padding: "0dp", "4dp"
+                _tab_name: "records"
+                _tab_icon: "clipboard-text-outline"
+                _tab_label: "记录"
+                _is_active: True if inner_sm.current == "records" else False
+
+                MDIcon:
+                    icon: "clipboard-text-outline"
+                    theme_text_color: "Custom"
+                    text_color: app.theme_cls.primary_color if inner_sm.current == "records" else "#999999"
+                    halign: "center"
+                    size_hint_y: 0.6
+
+                MDLabel:
+                    text: "记录"
+                    font_size: "10sp"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: app.theme_cls.primary_color if inner_sm.current == "records" else "#999999"
+
+            # 统计
+            BoxLayout:
+                on_touch_down: root.switch_to("stats")
+                orientation: "vertical"
+                padding: "0dp", "4dp"
+
+                MDIcon:
+                    icon: "chart-bar"
+                    theme_text_color: "Custom"
+                    text_color: app.theme_cls.primary_color if inner_sm.current == "stats" else "#999999"
+                    halign: "center"
+                    size_hint_y: 0.6
+
+                MDLabel:
+                    text: "统计"
+                    font_size: "10sp"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: app.theme_cls.primary_color if inner_sm.current == "stats" else "#999999"
+
+            # 型号
+            BoxLayout:
+                on_touch_down: root.switch_to("models")
+                orientation: "vertical"
+                padding: "0dp", "4dp"
+
+                MDIcon:
+                    icon: "package-variant"
+                    theme_text_color: "Custom"
+                    text_color: app.theme_cls.primary_color if inner_sm.current == "models" else "#999999"
+                    halign: "center"
+                    size_hint_y: 0.6
+
+                MDLabel:
+                    text: "型号"
+                    font_size: "10sp"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: app.theme_cls.primary_color if inner_sm.current == "models" else "#999999"
+
+            # 我的
+            BoxLayout:
+                on_touch_down: root.switch_to("profile")
+                orientation: "vertical"
+                padding: "0dp", "4dp"
+
+                MDIcon:
+                    icon: "account-outline"
+                    theme_text_color: "Custom"
+                    text_color: app.theme_cls.primary_color if inner_sm.current == "profile" else "#999999"
+                    halign: "center"
+                    size_hint_y: 0.6
+
+                MDLabel:
+                    text: "我的"
+                    font_size: "10sp"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: app.theme_cls.primary_color if inner_sm.current == "profile" else "#999999"
+
+
+<ShellScreen>:
+    def switch_to(self, name):
+        self.ids.inner_sm.current = name
+        # 刷新对应 screen
+        scr = self.ids.inner_sm.get_screen(name)
+        if hasattr(scr, 'on_enter'):
+            scr.dispatch("on_enter")

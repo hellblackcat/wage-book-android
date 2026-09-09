@@ -1,0 +1,116 @@
+<ProfileScreen>:
+    name: "profile"
+
+    ScrollView:
+        do_scroll_x: False
+
+        MDBoxLayout:
+            orientation: "vertical"
+            spacing: "12dp"
+            padding: "16dp"
+            size_hint_y: None
+            height: self.minimum_height
+
+            # ── 头像 + 姓名 ──
+            MDBoxLayout:
+                size_hint_y: None
+                height: "80dp"
+                spacing: "16dp"
+                padding: "0dp", "8dp"
+
+                MDIcon:
+                    icon: "account-circle"
+                    icon_size: "56dp"
+                    theme_text_color: "Custom"
+                    text_color: app.theme_cls.primary_color
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    size_hint_x: 1
+
+                    MDLabel:
+                        text: root.user_name or "未设置姓名"
+                        font_style: "H6"
+                        color: "#1F2329"
+
+                    MDLabel:
+                        text: "点击修改姓名"
+                        font_style: "Caption"
+                        color: "#888888"
+
+                MDIconButton:
+                    icon: "pencil"
+                    on_release: root.edit_name()
+
+            Divider:
+
+            # ── 数据信息 ──
+            MDLabel:
+                text: "数据信息"
+                font_style: "Subtitle2"
+                color: "#888888"
+                size_hint_y: None
+                height: "24dp"
+
+            _InfoRow:
+                icon: "database-outline"
+                label: "数据文件"
+                value: "wage_book.db"
+
+            _InfoRow:
+                icon: "backup-restore"
+                label: "备份说明"
+                value: "复制 db 文件即可备份"
+
+            # ── 关于 ──
+            MDLabel:
+                text: "关于"
+                font_style: "Subtitle2"
+                color: "#888888"
+                size_hint_y: None
+                height: "24dp"
+                pos_hint: {"top": 1}
+
+            _InfoRow:
+                icon: "information-outline"
+                label: "版本"
+                value: "1.0.0"
+
+            _InfoRow:
+                icon: "android"
+                label: "平台"
+                value: "Android"
+
+
+<_InfoRow>:
+    icon_name: StringProperty()
+    row_label: StringProperty()
+    row_value: StringProperty()
+
+    size_hint_y: None
+    height: "48dp"
+
+    BoxLayout:
+        spacing: "12dp"
+        padding: "0dp", "8dp"
+
+        MDIcon:
+            icon: root.icon_name
+            icon_size: "22dp"
+            theme_text_color: "Custom"
+            text_color: "#666666"
+            size_hint_x: None
+            width: "28dp"
+
+        MDLabel:
+            text: root.row_label
+            font_style: "Body2"
+            color: "#1F2329"
+            size_hint_x: 0.4
+
+        MDLabel:
+            text: root.row_value
+            font_style: "Body2"
+            color: "#888888"
+            size_hint_x: 0.6
+            halign: "right"

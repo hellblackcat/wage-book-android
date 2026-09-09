@@ -1,0 +1,209 @@
+<StatsScreen>:
+    name: "stats"
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        # 月份选择栏
+        MDBoxLayout:
+            size_hint_y: None
+            height: "52dp"
+            padding: "8dp", "4dp"
+            md_bg_color: "#F0F4FF"
+
+            MDIconButton:
+                icon: "chevron-left"
+                on_release: root.prev_month()
+
+            MDLabel:
+                text: root.current_month
+                halign: "center"
+                font_style: "Subtitle1"
+                bold: True
+                size_hint_x: 1
+
+            MDIconButton:
+                icon: "chevron-right"
+                on_release: root.next_month()
+
+        ScrollView:
+            do_scroll_x: False
+
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: "12dp"
+                spacing: "10dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # ── 本月工薪（大卡片）──
+                MDCard:
+                    size_hint_y: None
+                    height: "80dp"
+                    padding: "16dp"
+                    md_bg_color: "#1565C0"
+                    radius: "12dp"
+                    elevation: 3
+
+                    BoxLayout:
+                        orientation: "vertical"
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+                        MDLabel:
+                            text: "本月工薪"
+                            font_style: "Caption"
+                            color: 1, 1, 1, 0.8
+                            halign: "center"
+
+                        MDLabel:
+                            text: root.wage_display(root.summary_data.get("total_wage_fen") or 0) if root.summary_data else "0.00"
+                            font_style: "H4"
+                            color: 1, 1, 1, 1
+                            halign: "center"
+                            bold: True
+
+                # ── 5 项指标 ──
+                GridLayout:
+                    cols: 3
+                    spacing: "8dp"
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    _StatCard:
+                        title: "出勤天数"
+                        value: str(root.summary_data.get("work_days") or 0 if root.summary_data else "0")
+                        unit: "天"
+                        icon_color: "#4CAF50"
+
+                    _StatCard:
+                        title: "总工时"
+                        value: root.fmt_hours(root.summary_data.get("total_hours") or 0 if root.summary_data else 0)
+                        unit: "h"
+                        icon_color: "#2196F3"
+
+                    _StatCard:
+                        title: "大工工时"
+                        value: root.fmt_hours(root.summary_data.get("total_master") or 0 if root.summary_data else 0)
+                        unit: "h"
+                        icon_color: "#FF9800"
+
+                    _StatCard:
+                        title: "加班时长"
+                        value: root.fmt_hours(root.summary_data.get("total_overtime") or 0 if root.summary_data else 0)
+                        unit: "h"
+                        icon_color: "#E91E63"
+
+                    _StatCard:
+                        title: "夜班天数"
+                        value: str(root.summary_data.get("night_days") or 0 if root.summary_data else "0")
+                        unit: "天"
+                        icon_color: "#9C27B0"
+
+                    _StatCard:
+                        title: "记录条数"
+                        value: str(len(root.model_list))
+                        unit: "条"
+                        icon_color: "#607D8B"
+
+                # ── 型号汇总 ──
+                MDLabel:
+                    text: "型号汇总"
+                    font_style: "Subtitle1"
+                    bold: True
+                    size_hint_y: None
+                    height: "28dp"
+                    color: "#1F2329"
+
+                BoxLayout:
+                    orientation: "vertical"
+                    spacing: "6dp"
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    for m in root.model_list:
+                        ModelStatItem:
+                            model_name: m.get("model", "")
+                            quantity: str(m.get("quantity") or 0)
+                            wage_fen: m.get("wage_fen") or 0
+                            wage_display: root.wage_display(m.get("wage_fen") or 0)
+
+
+<_StatCard>:
+    title_text: StringProperty()
+    val_text: StringProperty()
+    unit_text: StringProperty()
+    icon_clr: StringProperty("#607D8B")
+
+    MDCard:
+        size_hint_y: None
+        height: "88dp"
+        padding: "8dp"
+        radius: "10dp"
+        elevation: 1
+
+        BoxLayout:
+            orientation: "vertical"
+            alignment: "center"
+            spacing: "2dp"
+
+            MDLabel:
+                text: root.title_text
+                font_style: "Caption"
+                color: "#888888"
+                halign: "center"
+
+            MDLabel:
+                text: root.val_text
+                font_style: "H5"
+                color: root.icon_clr
+                halign: "center"
+                bold: True
+
+            MDLabel:
+                text: root.unit_text
+                font_style: "Caption"
+                color: "#AAAAAA"
+                halign: "center"
+
+
+<ModelStatItem>:
+    model_name: StringProperty()
+    qty_text: StringProperty()
+    wage_str: StringProperty()
+
+    MDCard:
+        size_hint_y: None
+        height: "52dp"
+        padding: "12dp", "6dp"
+        radius: "8dp"
+        elevation: 0.5
+        line_color: "#E0E0E0"
+
+        BoxLayout:
+            size_hint_x: 1
+            spacing: "8dp"
+
+            MDLabel:
+                text: root.model_name
+                font_style: "Body1"
+                color: "#1F2329"
+                size_hint_x: 0.5
+                text_size: self.size
+                valign: "center"
+
+            MDLabel:
+                text: root.qty_text + " 件"
+                font_style: "Caption"
+                color: "#666666"
+                size_hint_x: 0.25
+                halign: "center"
+                valign: "center"
+
+            MDLabel:
+                text: root.wage_str + " 元"
+                font_style: "Body1"
+                color: app.theme_cls.primary_color
+                bold: True
+                size_hint_x: 0.25
+                halign: "right"
+                valign: "center"

@@ -1,0 +1,49 @@
+<SetupScreen>:
+    name: "setup"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: "24dp"
+        padding: "32dp", "48dp"
+        md_bg_color: "#FFFFFF"
+
+        # Logo / 标题
+        MDIcon:
+            icon: "clipboard-text-outline"
+            icon_size: "72dp"
+            theme_text_color: "Custom"
+            text_color: app.theme_cls.primary_color
+            size_hint_y: None
+            height: "80dp"
+
+        MDLabel:
+            text: "工资记账表"
+            font_style: "H5"
+            bold: True
+            halign: "center"
+            color: "#1F2329"
+            size_hint_y: None
+            height: "40dp"
+
+        MDLabel:
+            text: "请输入您的姓名，开始使用"
+            font_style: "Body2"
+            halign: "center"
+            color: "#888888"
+            size_hint_y: None
+            height: "28dp"
+
+        # 输入框
+        MDTextField:
+            id: name_field
+            hint_text: "您的姓名"
+            size_hint_x: 1
+            halign: "center"
+            font_size: "18sp"
+
+        # 按钮
+        MDRaisedButton:
+            text: "开始使用"
+            on_release: root.save_name()
+            size_hint_x: 1
+            height: "48dp"
